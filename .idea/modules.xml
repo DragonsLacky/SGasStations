@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/SGasStations.iml" filepath="$PROJECT_DIR$/.idea/SGasStations.iml" />
+      <module fileurl="file://$PROJECT_DIR$/SGasStations.iml" filepath="$PROJECT_DIR$/SGasStations.iml" />
     </modules>
   </component>
 </project>
