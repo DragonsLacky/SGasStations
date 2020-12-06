@@ -1,23 +1,197 @@
 <!DOCTYPE html>
-<html lang="en", xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>$Title$</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    <script th:src="@{/js/location.js}"></script>
+    <script th:src="@{/js/bootstrap.min.js}"></script>
+    <title>Title</title>
 </head>
 <body>
-<h2>Info about our request</h2>
+<div class="container">
+    <div class="row p-2" style="background-color: #ededed">
+        <div class="col-md-12">
+            <h2 class="h3 text-center">Gas Stations</h2>
+        </div>
+    </div>
+    <div class="row pt-3" style="background-color: #d8e5f1">
+        <div class="offset-md-3 col-md-6" >
+            <form th:action="@{/search}" th:method="POST">
+                <label class="input-group">
+                    <input placeholder="search" class="form-control rounded-left" type="text" name="search">
+                    <label class="input-group-append">
+                        <input class="btn btn-primary rounded-right" type="submit" value="search">
+                    </label>
+                </label>
+            </form>
+        </div>
+        <div class="col-md-1 offset-1 align-bottom" >
+            <a data-toggle="collapse" class="btn btn-primary" href="#footwear" ariaexpanded="false" ariacontrols="footwear">Advanced</a>
+        </div>
+    </div>
+    <div class="row" style="background-color: #ededed">
+        <div class="collapse col-md-12" id="footwear" style="background-color: #ededed">
+            <form>
+                <fieldset class="form-group">
+                    <div class="row align-items-center">
+                        <div class="col-md-4">
+                            <label class="h5 w-100">
+                                Distance
+                                <input class="form-control" type="text" name="distance">
+                            </label>
+                        </div>
+                        <div class="col-md-8 p-3 align-items-center">
+                            <table class="table table-bordered">
+                                <tr class="form-check">
+                                    <td class="p-4">
+                                        <label class="form-check-label">
+                                            <input class="form-check-input" type="checkbox" name="Biodiesel">Biodiesel
+                                        </label>
 
-<h2><th:block th:utext="карактер"/>Categories</h2>
-<ul>
-    <li th:each="gasStation: ${gasStations}"><th:block th:utext="${gasStation.name}"/> (<th:block th:text="${gasStation._id}"/>) - (<th:block th:text="${gasStation.lat}"/>,<th:block th:text="${gasStation.lon}"/>) </li>
-</ul>
+                                    </td>
+                                    <td class="p-4">
+                                        <label class="form-check-label">
+                                            <input class="form-check-input" type="checkbox" name="Biodiesel">Biodiesel
+                                        </label>
+                                    </td>
+                                    <td class="p-4 rounded-pill">
+                                        <label class="form-check-label">
+                                            <input class="form-check-input" type="checkbox" name="Biodiesel">Biodiesel
+                                        </label>
+                                    </td>
+                                    <td class="p-4">
+                                        <label class="form-check-label">
+                                            <input class="form-check-input" type="checkbox" name="Biodiesel">Biodiesel
+                                        </label>
+                                    </td>
+                                    <td class="p-4">
+                                        <label class="form-check-label">
+                                            <input class="form-check-input" type="checkbox" name="Biodiesel">Biodiesel
+                                        </label>
+                                    </td>
+                                    <td class="p-4">
+                                        <label class="form-check-label">
+                                            <input class="form-check-input" type="checkbox" name="Biodiesel">Biodiesel
+                                        </label>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="h5 w-100">
+                                Name
+                                <input class="form-control" type="text" name="Name">
+                            </label>
+                        </div>
+                        <div class="col-md-8 align-items-center text-center">
+                            <div class="row">
+                                <div class="col-md-4 offset-md-4">
+                                    <input type="submit" class="btn btn-primary w-100" value="Advanced search">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </fieldset>
 
-<h3>Add New Category</h3>
-<form th:action="@{/servlet/thymeleaf/category}" th:method="POST">
-    <label for='name'>Name:</label>:<input id='name' type='text' name='name'/>
-    <label for='desc'>Description:</label>:<input id='desc' type='text' name='description'/>
-    <input type='submit' value='Submit'/>
+            </form>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12   " style="background-color: #ededed">
+            <table class="table m-0 h100 w-100" >
+                <thead>
+                <tr class="row">
+                    <td class="col-md-3 h4 text-center ">
+                        Name
+                    </td>
+                    <td class="col-md-3 h4 text-center ">
+                        Distance
+                    </td>
+                    <td class="col-md-3 h4 text-center ">
+                        Availability
+                    </td>
+                    <td class="col-md-3 h4 text-center ">
+                        Directions
+                    </td>
+                </tr>
+                </thead>
+                <tbody class="table-borderless" th:each="stations : ${gasStations}">
+                <tr class="row align-items-center">
+                    <td class="col-md-3 text-center" th:text="${stations.name}"></td>
+                    <td class="col-3 text-center" th:text="${stations.distance}"></td>
+                    <td class="col-3 text-right pr-5">
+                        <div class="form-check">
+                            <label class="form-check-label">Biodiesel</label>
+                            <label class="form-check-label form-check-inline">
+                                <input th:checked="${stations.bioDiessel}" disabled="disabled" class="form-check-input" type="checkbox">
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <label class="form-check-label">Diesel</label>
+                            <label class="form-check-label form-check-inline">
+                                <input th:checked="${stations.diesel}" disabled="disabled" class="form-check-input" type="checkbox">
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <label class="form-check-label">Lpg</label>
+                            <label class="form-check-label form-check-inline">
+                                <input th:checked="${stations.lpg}" disabled="disabled" class="form-check-input" type="checkbox">
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <label class="form-check-label">Octane100</label>
+                            <label class="form-check-label form-check-inline">
+                                <input th:checked="${stations.octane100}" disabled="disabled" class="form-check-input" type="checkbox">
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <label class="form-check-label">Octane95</label>
+                            <label class="form-check-label form-check-inline">
+                                <input th:checked="${stations.octane95}" disabled="disabled" class="form-check-input" type="checkbox">
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <label class="form-check-label">Octane98</label>
+                            <label class="form-check-label form-check-inline">
+                                <input th:checked="${stations.octane98}" disabled="disabled" class="form-check-input" type="checkbox">
+                            </label>
+                        </div>
+                    </td>
+                    <td class="col-3 text-center align-middle">
+                        <a class="m-auto btn btn-primary" th:href="@{'http://www.google.com/maps/dir/'+${stations.location.coordinates[1]}+','+${stations.location.coordinates[0]}+'/42.0177183,21.4304245'}">Directions</a>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<form id="getloc" class="hide" th:action="@{/show}" th:method="GET">
+    <input id="location" type="hidden" name="location">
 </form>
-$END$
+<script>
+    getLocation()
+    if (!window.location.href.toString().includes("show")){
+        document.getElementById('location').setAttribute('value', this.position.coords.longitude+","+this.position.coords.latitude)
+        console.log()
+        document.getElementById('getloc').submit();
+    }
+
+    window.onbeforeunload = function (e){
+        if(e.state){
+            window.location.href = window.location.href.toString().slice(0,window.location.href.lastIndexOf("/"))
+        }
+    }
+    window.onpopstate = function(e){
+        if(e.state){
+            window.location.href = window.location.href.toString().slice(0,window.location.href.lastIndexOf("/"))
+        }
+    };
+</script>
 </body>
 </html>
+

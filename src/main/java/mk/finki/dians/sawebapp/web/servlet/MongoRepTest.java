@@ -1,21 +1,29 @@
 package mk.finki.dians.sawebapp.web.servlet;
 
+import lombok.SneakyThrows;
+import mk.finki.dians.sawebapp.model.GasStation;
+import mk.finki.dians.sawebapp.model.location;
 import mk.finki.dians.sawebapp.service.GasStationsService;
-import org.springframework.web.servlet.ViewResolver;
-import org.thymeleaf.context.Context;
 import org.thymeleaf.context.WebContext;
 import org.thymeleaf.spring5.SpringTemplateEngine;
-import org.thymeleaf.spring5.view.ThymeleafViewResolver;
-import org.thymeleaf.templateresolver.ServletContextTemplateResolver;
 
+import javax.script.Invocable;
+import javax.script.ScriptEngine;
+import javax.script.ScriptEngineManager;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.Comparator;
+import java.util.List;
+import java.util.stream.Collectors;
 
-@WebServlet(name = "name1", urlPatterns = "/s")
+@WebServlet(name = "name1", urlPatterns = "/test")
 public class MongoRepTest extends HttpServlet {
     private final GasStationsService gasStationsService;
     private final SpringTemplateEngine templateEngine;
@@ -25,10 +33,18 @@ public class MongoRepTest extends HttpServlet {
         this.templateEngine = templateEngine;
     }
     
+    @SneakyThrows
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         WebContext context = new WebContext(req,resp,req.getServletContext());
-        context.setVariable("gasStations", gasStationsService.findAll());
+        Double[] doubles = new Double[2];
+        doubles[0] = 21.0798146;
+        doubles[1] = 42.1003965;
+        location loc = new location("Point",doubles);
+        List<GasStation> gasStations = gasStationsService.findByDistance(new location("Point",doubles),100);
+        gasStations.forEach(gasStation -> gasStation.distance(loc));
+        gasStations = gasStations.stream().sorted(Comparator.comparing(gasStation -> gasStation.distance)).collect(Collectors.toList());
+        context.setVariable("gasStations", gasStations);
         templateEngine.process("GasStations.html",context,resp.getWriter());
     }
 }
