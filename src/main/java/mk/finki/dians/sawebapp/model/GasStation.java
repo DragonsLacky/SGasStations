@@ -15,7 +15,7 @@ public class GasStation {
     @Field("name_en")
     public String enName;
     @Field("fuel_biodiesel")
-    public Boolean bioDiessel;
+    public Boolean bioDiesel;
     @Field("fuel_lpg")
     public Boolean lpg;
     public Boolean diesel;
@@ -33,11 +33,11 @@ public class GasStation {
     public Double distance;
     
     @PersistenceConstructor
-    public GasStation(String _id, String name, String enName, Boolean bioDiessel, Boolean lpg, String lat, String lon) {
+    public GasStation(String _id, String name, String enName, Boolean bioDiesel, Boolean lpg, String lat, String lon) {
         this._id = _id;
         this.name = name;
         this.enName = enName;
-        this.bioDiessel = bioDiessel;
+        this.bioDiesel = bioDiesel;
         this.lpg = lpg;
         this.lat = lat;
         this.lon = lon;
@@ -49,7 +49,7 @@ public class GasStation {
                 "_id='" + _id + '\'' +
                 ", name='" + name + '\'' +
                 ", enName='" + enName + '\'' +
-                ", bioDiessel='" + bioDiessel + '\'' +
+                ", bioDiessel='" + bioDiesel + '\'' +
                 ", lpg='" + lpg + '\'' +
                 ", lat='" + lat + '\'' +
                 ", lon='" + lon + '\'' +
@@ -68,8 +68,8 @@ public class GasStation {
         return enName;
     }
     
-    public Boolean getBioDiessel() {
-        return bioDiessel;
+    public Boolean getBioDiesel() {
+        return bioDiesel;
     }
     
     public Boolean getLpg() {
@@ -91,6 +91,6 @@ public class GasStation {
     public void distance(Location loc){
         double pi = 0.017453292519943295;
         double a = 0.5 - Math.cos((loc.coordinates[1]-location.coordinates[1]) *pi)/2 + Math.cos(location.coordinates[1] * pi) * Math.cos(loc.coordinates[1] * pi) * (1 - Math.cos((loc.coordinates[0]-location.coordinates[0]) * pi ))/2;
-        this.distance =  12742 * Math.asin(Math.sqrt(a)); //(double)Math.round((12742 * Math.asin(Math.sqrt(a)))*10000)/100;
+        this.distance = (double)Math.round((12742 * Math.asin(Math.sqrt(a)))*10000)/100;
     }
 }

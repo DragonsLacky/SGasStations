@@ -2,7 +2,7 @@ package mk.finki.dians.sawebapp.web.servlet;
 
 import lombok.SneakyThrows;
 import mk.finki.dians.sawebapp.model.GasStation;
-import mk.finki.dians.sawebapp.model.location;
+import mk.finki.dians.sawebapp.model.Location;
 import mk.finki.dians.sawebapp.service.GasStationsService;
 import org.thymeleaf.context.WebContext;
 import org.thymeleaf.spring5.SpringTemplateEngine;
@@ -40,8 +40,8 @@ public class MongoRepTest extends HttpServlet {
         Double[] doubles = new Double[2];
         doubles[0] = 21.0798146;
         doubles[1] = 42.1003965;
-        location loc = new location("Point",doubles);
-        List<GasStation> gasStations = gasStationsService.findByDistance(new location("Point",doubles),100);
+        Location loc = new Location("Point",doubles);
+        List<GasStation> gasStations = gasStationsService.findByDistance(new Location("Point",doubles),100);
         gasStations.forEach(gasStation -> gasStation.distance(loc));
         gasStations = gasStations.stream().sorted(Comparator.comparing(gasStation -> gasStation.distance)).collect(Collectors.toList());
         context.setVariable("gasStations", gasStations);

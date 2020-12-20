@@ -10,12 +10,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- *
+ *  Controller that
  */
 @Controller
 @RequestMapping("")
@@ -34,16 +35,21 @@ public class GasStationController {
     }
     
     @GetMapping("show")
-    public String getLocation(@RequestParam(required = false) String location, Model model){
-        Double[] doubles = new Double[2];
-        String[] strings = location.split(",");
-        doubles[0] = Double.parseDouble(strings[0]);
-        doubles[1] = Double.parseDouble(strings[1]);
-        Location loc = new Location("Point",doubles);
-        List<GasStation> gasStations = gasStationsService.findByDistance(new Location("Point",doubles),100);
-        gasStations.forEach(gasStation -> gasStation.distance(loc));
-        gasStations = gasStations.stream().sorted(Comparator.comparing(gasStation -> gasStation.distance)).collect(Collectors.toList());
-        model.addAttribute("gasStations", gasStations);
+    public String getLocation(@RequestParam(required = false) String location,@RequestParam(required = false)String searchTerm, Model model) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
+        if(searchTerm != null && searchTerm.isEmpty()){
+            gasStationsService.getSearchBuilder().addTerm(searchTerm);
+            List<GasStation> gasStations;
+            try {
+                gasStations = gasStationsService.find();
+            } catch (Exception e) {
+                gasStations = gasStationsService.findAll();;
+            }
+            model.addAttribute("gasStations", gasStations);
+        }else {
+            String[] l = location.split(",");
+            Location loc = new Location("Point", new Double[]{Double.parseDouble(l[0]),Double.parseDouble(l[1])});
+            model.addAttribute("gasStations", gasStationsService.findByDistance(loc, 10));
+        }
         return "GasStations";
     }
     

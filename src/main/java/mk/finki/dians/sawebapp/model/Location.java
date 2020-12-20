@@ -1,5 +1,8 @@
 package mk.finki.dians.sawebapp.model;
 
+import lombok.Data;
+
+@Data
 public class Location {
     public String type;
     public Double[] coordinates;
