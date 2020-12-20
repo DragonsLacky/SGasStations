@@ -30,9 +30,8 @@ public class GasStationServiceImplementation implements GasStationsService {
         this.mongoOperations = mongoOperations;
         this.gasStationRepository = gasStationRepository;
         this.builder = SearchConditionBuilder.SearchBuilder();
-        this.builder.addSearchMethod("findByTermDistanceTypeAndOrderByDistance").addTerm("").addDistance(10.0).addBioDiesel(null).addDiesel(null).addLpg(null).addOctane100(null).addOctane98(null).addOctane95(null).addUserLocation(new Location( "Point",new Double[]{-97.8220,37.7510})).setAny();
+        this.builder.addSearchMethod("findByTermDistanceTypeAndOrderByDistance").addTerm("").addDistance(10.0).addBioDiesel(null).addDiesel(null).addLpg(null).addOctane100(null).addOctane98(null).addOctane95(null).addUserLocation(new Location( "Point",new Double[]{-97.8220,37.7510}));
     }
-    
     
     @Override
     public List<GasStation> find() throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
@@ -67,9 +66,9 @@ public class GasStationServiceImplementation implements GasStationsService {
     public List<GasStation> findByTermDistanceTypeAndOrderByDistance(String term, Location userLocation, Double Distance, Boolean bioDiesel, Boolean lpg, Boolean diesel, Boolean octane100, Boolean octane98, Boolean octane95, Boolean any) {
         List<GasStation> gasStations = findAndOrderByDistance(userLocation, Distance);
         return gasStations.stream()
-                .filter(gasStation -> gasStation.getName().toLowerCase().contains(term) ||
-                gasStation.getBrand().toLowerCase().contains(term) ||
-                gasStation.getEnName().toLowerCase().contains(term))
+                .filter(gasStation -> (gasStation.getName() != null && gasStation.getName().toLowerCase().contains(term)) ||
+                (gasStation.getBrand() != null && gasStation.getBrand().toLowerCase().contains(term)) ||
+                (gasStation.getEnName()!= null && gasStation.getEnName().toLowerCase().contains(term)))
                 .filter(gasStation -> any || ( (gasStation.getBioDiesel() == bioDiesel || gasStation.getBioDiesel() == null) &&
                         (gasStation.getLpg() == lpg || gasStation.getLpg() == null) &&
                         (gasStation.getDiesel() == diesel || gasStation.getDiesel() == null) &&

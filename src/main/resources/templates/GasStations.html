@@ -19,9 +19,10 @@
     </div>
     <div class="row pt-3" style="background-color: #d8e5f1">
         <div class="offset-md-3 col-md-6" >
-            <form th:action="@{/search}" th:method="POST">
+            <form th:action="@{/show}" th:method="GET">
                 <label class="input-group">
-                    <input placeholder="search" class="form-control rounded-left" type="text" name="search">
+                    <input class="location" type="hidden" name="location">
+                    <input placeholder="search" th:value="${searchTerm}?${searchTerm}:''" class="form-control rounded-left" type="text" name="search">
                     <label class="input-group-append">
                         <input class="btn btn-primary rounded-right" type="submit" value="search">
                     </label>
@@ -34,8 +35,9 @@
     </div>
     <div class="row" style="background-color: #ededed">
         <div class="collapse col-md-12" id="footwear" style="background-color: #ededed">
-            <form>
+            <form th:action="@{/show}" th:method="GET">
                 <fieldset class="form-group">
+                    <input class="location" type="hidden" name="location">
                     <div class="row align-items-center">
                         <div class="col-md-4">
                             <label class="h5 w-100">
@@ -48,33 +50,33 @@
                                 <tr class="form-check">
                                     <td class="p-4">
                                         <label class="form-check-label">
-                                            <input class="form-check-input" type="checkbox" name="Biodiesel">Biodiesel
+                                            <input class="form-check-input" value="1" type="checkbox" name="biodiesel">Biodiesel
                                         </label>
 
                                     </td>
                                     <td class="p-4">
                                         <label class="form-check-label">
-                                            <input class="form-check-input" type="checkbox" name="Biodiesel">Biodiesel
+                                            <input class="form-check-input" type="checkbox" name="lpg">Lpg
                                         </label>
                                     </td>
                                     <td class="p-4 rounded-pill">
                                         <label class="form-check-label">
-                                            <input class="form-check-input" type="checkbox" name="Biodiesel">Biodiesel
+                                            <input class="form-check-input" type="checkbox" name="diesel">Diesel
                                         </label>
                                     </td>
                                     <td class="p-4">
                                         <label class="form-check-label">
-                                            <input class="form-check-input" type="checkbox" name="Biodiesel">Biodiesel
+                                            <input class="form-check-input" type="checkbox" name="octane95">Octane95
                                         </label>
                                     </td>
                                     <td class="p-4">
                                         <label class="form-check-label">
-                                            <input class="form-check-input" type="checkbox" name="Biodiesel">Biodiesel
+                                            <input class="form-check-input" type="checkbox" name="octane98">Octane98
                                         </label>
                                     </td>
                                     <td class="p-4">
                                         <label class="form-check-label">
-                                            <input class="form-check-input" type="checkbox" name="Biodiesel">Biodiesel
+                                            <input class="form-check-input" type="checkbox" name="octane100">Octane100
                                         </label>
                                     </td>
                                 </tr>
@@ -83,7 +85,7 @@
                         <div class="col-md-4">
                             <label class="h5 w-100">
                                 Name
-                                <input class="form-control" type="text" name="Name">
+                                <input class="form-control" type="text" name="search">
                             </label>
                         </div>
                         <div class="col-md-8 align-items-center text-center">
@@ -95,7 +97,6 @@
                         </div>
                     </div>
                 </fieldset>
-
             </form>
         </div>
     </div>
@@ -171,16 +172,22 @@
     </div>
 </div>
 <form id="getloc" class="hide" th:action="@{/show}" th:method="GET">
-    <input id="location" type="hidden" name="location">
+    <input class="location" type="hidden" name="location">
 </form>
 <script>
     getLocation()
+    let elems = document.getElementsByClassName('location');
     if (!window.location.href.toString().includes("show")){
-        document.getElementById('location').setAttribute('value', this.position.coords.longitude+","+this.position.coords.latitude)
+        for (let i = 0; i < elems.length; i++) {
+            elems[i].setAttribute('value', this.position.coords.longitude+","+this.position.coords.latitude)
+        }
         console.log()
         document.getElementById('getloc').submit();
     }
-
+    getLocation();
+    for (let i = 0; i < elems.length; i++) {
+        elems[i].setAttribute('value', this.position.coords.longitude+","+this.position.coords.latitude)
+    }
     window.onbeforeunload = function (e){
         if(e.state){
             window.location.href = window.location.href.toString().slice(0,window.location.href.lastIndexOf("/"))

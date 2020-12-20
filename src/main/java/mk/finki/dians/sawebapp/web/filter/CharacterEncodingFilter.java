@@ -5,6 +5,9 @@ import javax.servlet.*;
 import javax.servlet.annotation.WebFilter;
 import java.io.IOException;
 
+/**
+ * A filter that makes sure the character encoding is correct.
+ */
 @WebFilter
 public class CharacterEncodingFilter implements Filter {
     @Override
