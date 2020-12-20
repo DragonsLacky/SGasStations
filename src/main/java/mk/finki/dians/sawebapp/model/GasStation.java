@@ -3,11 +3,8 @@ package mk.finki.dians.sawebapp.model;
 import lombok.Data;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.PersistenceConstructor;
-import org.springframework.data.geo.Distance;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
-
-import javax.swing.text.Caret;
 
 @Data
 @Document(collection = "gasStations")
@@ -32,7 +29,7 @@ public class GasStation {
     public String lat;
     public String lon;
     @Field("location")
-    public location location;
+    public Location location;
     public Double distance;
     
     @PersistenceConstructor
@@ -87,7 +84,11 @@ public class GasStation {
         return lon;
     }
     
-    public void distance(location loc){
+    /***
+     * Calculates the distance between the current object and location passed as a parameter.
+     * @param loc location given (usually the user location) by which to get the distance
+     */
+    public void distance(Location loc){
         double pi = 0.017453292519943295;
         double a = 0.5 - Math.cos((loc.coordinates[1]-location.coordinates[1]) *pi)/2 + Math.cos(location.coordinates[1] * pi) * Math.cos(loc.coordinates[1] * pi) * (1 - Math.cos((loc.coordinates[0]-location.coordinates[0]) * pi ))/2;
         this.distance =  12742 * Math.asin(Math.sqrt(a)); //(double)Math.round((12742 * Math.asin(Math.sqrt(a)))*10000)/100;

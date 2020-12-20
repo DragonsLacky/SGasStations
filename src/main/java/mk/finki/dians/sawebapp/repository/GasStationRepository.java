@@ -1,7 +1,6 @@
 package mk.finki.dians.sawebapp.repository;
 
 import mk.finki.dians.sawebapp.model.GasStation;
-import mk.finki.dians.sawebapp.model.location;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 
@@ -9,8 +8,18 @@ import java.util.List;
 
 @Repository
 public interface GasStationRepository extends MongoRepository<GasStation, String> {
-    //public List<GasStation> findByName(String name);
-    //public List<GasStation> findByBioDiessel(Boolean B);
+    /**
+     * The main function that directly accesses the database and gives all the documents available.
+     * @return List<GasStation> the list of all objects available in database.
+     */
     List<GasStation> findAll();
-    List<GasStation> findByLocation(location location);
+    
+    /**
+     * Searches the database for object that contain the name, brand or english name at the same time, and filters accordingly.
+     * @param name the name of the object that is searched.
+     * @param brand the name of the brand of the searched object.
+     * @param enName the english name of the object that is search for.
+     * @return List<GasStation> filtered list of the database satisfying the condition.
+     */
+    List<GasStation> findAllByNameContainsIgnoreCaseOrBrandContainsIgnoreCaseOrEnNameContainsIgnoreCase(String name, String brand, String enName);
 }
