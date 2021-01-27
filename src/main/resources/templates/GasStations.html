@@ -42,7 +42,7 @@
                         <div class="col-md-4">
                             <label class="h5 w-100">
                                 Distance
-                                <input class="form-control" type="text" name="distance">
+                                <input class="form-control" type="number" name="distance">
                             </label>
                         </div>
                         <div class="col-md-8 p-3 align-items-center">
@@ -123,7 +123,7 @@
                 <tbody class="table-borderless" th:each="stations : ${gasStations}">
                 <tr class="row align-items-center">
                     <td class="col-md-3 text-center" th:text="${stations.name}"></td>
-                    <td class="col-3 text-center" th:text="${stations.distance}"></td>
+                    <td class="col-3 text-center" th:text="${stations.getDistance()}"></td>
                     <td class="col-3 text-right pr-5">
                         <div class="form-check">
                             <label class="form-check-label">Biodiesel</label>
@@ -163,7 +163,7 @@
                         </div>
                     </td>
                     <td class="col-3 text-center align-middle">
-                        <a class="m-auto btn btn-primary" th:href="@{'http://www.google.com/maps/dir/'+${stations.location.coordinates[1]}+','+${stations.location.coordinates[0]}+'/42.0177183,21.4304245'}">Directions</a>
+                        <a class="m-auto btn btn-primary" th:href="@{'http://www.google.com/maps/dir/' + ${stations.location.coordinates[1]} + ',' + ${stations.location.coordinates[0]} + '/' + ${userLocation.coordinates[1]}+','+ ${userLocation.coordinates[0]}}">Directions</a>
                     </td>
                 </tr>
                 </tbody>
@@ -175,19 +175,20 @@
     <input class="location" type="hidden" name="location">
 </form>
 <script>
-    getLocation()
-    let elems = document.getElementsByClassName('location');
-    if (!window.location.href.toString().includes("show")){
+    function setElementValue(){
         for (let i = 0; i < elems.length; i++) {
             elems[i].setAttribute('value', this.position.coords.longitude+","+this.position.coords.latitude)
         }
+    }
+    getLocation()
+    let elems = document.getElementsByClassName('location');
+    if (!window.location.href.toString().includes("show")){
+        setElementValue();
         console.log()
         document.getElementById('getloc').submit();
     }
     getLocation();
-    for (let i = 0; i < elems.length; i++) {
-        elems[i].setAttribute('value', this.position.coords.longitude+","+this.position.coords.latitude)
-    }
+    setElementValue()
     window.onbeforeunload = function (e){
         if(e.state){
             window.location.href = window.location.href.toString().slice(0,window.location.href.lastIndexOf("/"))

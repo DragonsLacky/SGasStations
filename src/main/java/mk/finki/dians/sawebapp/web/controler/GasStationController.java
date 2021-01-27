@@ -6,9 +6,10 @@ import mk.finki.dians.sawebapp.service.GasStationsService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+
+import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
 /**
@@ -48,21 +49,33 @@ public class GasStationController {
      * @return String name of the view
      */
     @GetMapping("show")
-    public String getLocation(@RequestParam String location,@RequestParam(required = false) String search,@RequestParam(required = false)Double distance,@RequestParam(required = false) Boolean biodiesel,@RequestParam(required = false) Boolean lpg,@RequestParam(required = false) Boolean diesel, @RequestParam(required = false) Boolean octane95, @RequestParam(required = false) Boolean octane98, @RequestParam(required = false) Boolean octane100, @RequestParam(required = false) Boolean any  , Model model) {
+    public String getLocation(@RequestParam String location,@RequestParam(required = false) String search,@RequestParam(required = false)Double distance,@RequestParam(required = false) Boolean biodiesel,@RequestParam(required = false) Boolean lpg,@RequestParam(required = false) Boolean diesel, @RequestParam(required = false) Boolean octane95, @RequestParam(required = false) Boolean octane98, @RequestParam(required = false) Boolean octane100, @RequestParam(required = false) Boolean any  , Model model) throws NoSuchFieldException, IllegalAccessException, NoSuchMethodException, InvocationTargetException {
         String[] l = location.split(",");
         Location loc = new Location("Point", new Double[]{Double.parseDouble(l[0]),Double.parseDouble(l[1])});
-        gasStationsService.getSearchBuilder().addUserLocation(loc).addTerm(search!=null ? search : "").addBioDiesel(biodiesel).addLpg(lpg).addDiesel(diesel).addOctane95(octane95).addOctane98(octane98).addOctane100(octane100).setAny(biodiesel != null || diesel != null || lpg != null || octane95 != null || octane98 != null || octane100 != null);
+        
+        gasStationsService.getSearchBuilder()
+                .buildUserLocation(loc)
+                .buildTerm(search!=null ? search : "")
+                .buildBioDiesel(biodiesel)
+                .buildLpg(lpg)
+                .buildDiesel(diesel)
+                .buildOctane95(octane95)
+                .buildOctane98(octane98)
+                .buildOctane100(octane100)
+                .buildOIgnore(biodiesel != null || diesel != null || lpg != null || octane95 != null || octane98 != null || octane100 != null);
+        
         if(distance != null){
-            gasStationsService.getSearchBuilder().addDistance(distance);
+            gasStationsService.getSearchBuilder().buildDistance(distance);
         }
         List<GasStation> gasStations;
         try {
-            gasStations = gasStationsService.find();
+            gasStations = gasStationsService.listByBuilderConditions();
         } catch (Exception e) {
-            gasStations = gasStationsService.findAll();
+            gasStations = gasStationsService.list();
         }
         model.addAttribute("searchTerm", search);
         model.addAttribute("gasStations", gasStations);
+        model.addAttribute("userLocation", loc);
         return "GasStations";
     }
 }

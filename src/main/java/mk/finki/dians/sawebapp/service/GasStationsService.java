@@ -2,6 +2,9 @@ package mk.finki.dians.sawebapp.service;
 
 import mk.finki.dians.sawebapp.model.GasStation;
 import mk.finki.dians.sawebapp.model.Location;
+import mk.finki.dians.sawebapp.service.implementation.SearchBuilder.ISearchBuilderSimplified;
+import mk.finki.dians.sawebapp.service.implementation.SearchBuilder.MethodBuilder;
+import org.springframework.data.geo.Distance;
 import org.springframework.stereotype.Service;
 
 import java.lang.reflect.InvocationTargetException;
@@ -12,32 +15,23 @@ import java.util.List;
  */
 @Service
 public interface GasStationsService {
-        List<GasStation> find() throws NoSuchMethodException, IllegalAccessException, InvocationTargetException;
-        /**
-         * Accesses the repository object that has access to the database and returns all the available elements.
-         * @return List returns the List of the requested object
-         */
-        List<GasStation> findAll();
-        /**
-         * Sets the parameters of the searchBuilder and calls the searchBuilder function which accesses the repository object that has access to the database and returns all the available elements while filtering by the distance and current user location.
-         * Sends a custom created query to the database to filter and acquire the required data
-         * @param location custom class created consisting of longitude and latitude for the current location of the user.
-         * @param distance distance in meters to filter by
-         * @return List returns the List of the objects within distance from the current location.
-         */
-        List<GasStation> findByDistance(Location location, double distance) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException;
         
         /**
-         * Sets the parameters of the searchBuilder and calls the searchBuilder function which accesses the repository object that has access to the database and returns all the available elements while filtering by the distance and current user location.
-         * Sends a custom created query to the database to filter and acquire the required data ordered by the distance in ascending.
-         * @param location custom class created consisting of longitude and latitude for the current location of the user.
-         * @param distance distance in meters to filter by.
-         * @return List returns the List of the objects within distance from the current location ordered by distance in ascending.
+         * Calls the specified method from the builder, with all the conditions set up in the builder.
+         * @return List of gas stations
+         * @throws NoSuchMethodException when the method doesn't exist
+         * @throws IllegalAccessException when the caller does not have access to the specified method
+         * @throws InvocationTargetException wraps the exceptions thrown by invocation of function
          */
-        List<GasStation> findAndOrderByDistance(Location location, double distance);
+        List<GasStation> listByBuilderConditions() throws NoSuchMethodException, IllegalAccessException, InvocationTargetException;
+        /**
+         * Accesses the repository object that has access to the database and returns all the available elements and there are no specific search conditions.
+         * @return List of the requested objects, contained within the database
+         */
+        List<GasStation> list();
         
         /**
-         * Set as the default search function in the searchBuilder, it filters the list by the given parameters.
+         * The function called by the search builder, with all its parameters specified, it can also be called by the user with the parameters specified.
          * @param term the keyword that must be contained by any of the given object attributes.
          * @param userLocation the current users location.
          * @param Distance the maximum search distance.
@@ -47,14 +41,14 @@ public interface GasStationsService {
          * @param octane100 a boolean parameter that describes the fuel type
          * @param octane98 a boolean parameter that describes the fuel type
          * @param octane95 a boolean parameter that describes the fuel type
-         * @param any a boolean parameter that describes the fuel type
-         * @return List<GasStation> the list of filtered documents
+         * @param ignore a boolean parameter that describes the fuel type
+         * @return the list of filtered documents by the conditions specified in the method builder ordered by the distance
          */
-        List<GasStation> findByTermDistanceTypeAndOrderByDistance(String term, Location userLocation, Double Distance, Boolean bioDiesel, Boolean lpg, Boolean diesel, Boolean octane100, Boolean octane98, Boolean octane95, Boolean any);
+        List<GasStation> listByTermDistanceTypeAndOrderByDistance(String term, Location userLocation, Double Distance, Boolean bioDiesel, Boolean lpg, Boolean diesel, Boolean octane100, Boolean octane98, Boolean octane95, Boolean ignore);
         
         /**
          *This function gets the current instance of the searchbuilder object.
          * @return SearchConditionBuilder the builder that is used to call the function to filter ducuments.
          */
-        SearchConditionBuilder getSearchBuilder();
+        ISearchBuilderSimplified getSearchBuilder();
 }
