@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Main controler in charge of viewing and searching through the gas Stations from the database
@@ -55,7 +56,7 @@ public class GasStationController {
         
         gasStationsService.getSearchBuilder()
                 .buildUserLocation(loc)
-                .buildTerm(search!=null ? search : "")
+                .buildTerm(search!=null ? search.toLowerCase() : "")
                 .buildBioDiesel(biodiesel)
                 .buildLpg(lpg)
                 .buildDiesel(diesel)
@@ -68,11 +69,11 @@ public class GasStationController {
             gasStationsService.getSearchBuilder().buildDistance(distance);
         }
         List<GasStation> gasStations;
-        try {
+        //try {
             gasStations = gasStationsService.listByBuilderConditions();
-        } catch (Exception e) {
-            gasStations = gasStationsService.list();
-        }
+        //} catch (Exception e) {
+            //gasStations = gasStationsService.list();
+        //}
         model.addAttribute("searchTerm", search);
         model.addAttribute("gasStations", gasStations);
         model.addAttribute("userLocation", loc);

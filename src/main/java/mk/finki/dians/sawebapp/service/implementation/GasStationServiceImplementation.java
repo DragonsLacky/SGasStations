@@ -1,5 +1,9 @@
 package mk.finki.dians.sawebapp.service.implementation;
 
+import com.mongodb.BasicDBObject;
+import com.mongodb.BasicDBObjectBuilder;
+import com.mongodb.DBObject;
+import com.mongodb.client.MongoClient;
 import mk.finki.dians.sawebapp.model.GasStation;
 import mk.finki.dians.sawebapp.model.Location;
 import mk.finki.dians.sawebapp.repository.GasStationRepository;
@@ -7,11 +11,10 @@ import mk.finki.dians.sawebapp.service.GasStationsService;
 import mk.finki.dians.sawebapp.service.implementation.SearchBuilder.ISearchBuilderSimplified;
 import mk.finki.dians.sawebapp.service.implementation.SearchBuilder.SearchBuilder;
 import mk.finki.dians.sawebapp.service.implementation.SearchBuilder.SearchBuilderSimplified;
-import org.springframework.data.geo.Circle;
-import org.springframework.data.geo.Distance;
-import org.springframework.data.geo.Metrics;
+import org.bson.BSONObject;
+import org.springframework.data.geo.*;
 import org.springframework.data.mongodb.core.MongoOperations;
-import org.springframework.data.geo.Point;
+import org.springframework.data.mongodb.core.query.BasicQuery;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
@@ -19,17 +22,18 @@ import org.springframework.stereotype.Service;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Stack;
 import java.util.stream.Collectors;
 
 @Service
 public class GasStationServiceImplementation implements GasStationsService {
     
-    private final MongoOperations mongoOperations;
+
     private final GasStationRepository gasStationRepository;
     private final ISearchBuilderSimplified builder;
     
-    public GasStationServiceImplementation(MongoOperations mongoOperations, GasStationRepository gasStationRepository) throws NoSuchFieldException {
-        this.mongoOperations = mongoOperations;
+    public GasStationServiceImplementation(GasStationRepository gasStationRepository) throws NoSuchFieldException {
+
         this.gasStationRepository = gasStationRepository;
         this.builder = new SearchBuilderSimplified(new SearchBuilder("listByTermDistanceTypeAndOrderByDistance", this.getClass()));
     }
@@ -52,24 +56,9 @@ public class GasStationServiceImplementation implements GasStationsService {
      * @return List returns the List of the objects within distance from the current location ordered by distance in ascending.
      */
     private List<GasStation> findAndOrderByDistance(Location location, Double distance) {
-        List<GasStation> gasStations = queryGasStationsByDistance(location,distance);
+        List<GasStation> gasStations = gasStationRepository.findByLocationCoordinatesWithin(location.coordinates,distance*1000) ;
         gasStations.forEach(gasStation -> gasStation.distance(location));
         return gasStations.stream().sorted(Comparator.comparing(gasStation -> gasStation.distance)).collect(Collectors.toList());
-    }
-    
-    /**
-     * sets up the query, and sends it to the database, getting the objects with a geolocation withing a radius around the given location.
-     * @param location the location of the user
-     * @param distance the maximum distance to search for in a radius around location
-     * @return
-     */
-    private List<GasStation> queryGasStationsByDistance(Location location, Double distance){
-        Point point = new Point(location.coordinates[0],location.coordinates[1]);
-        Distance radius = new Distance(distance, Metrics.KILOMETERS);
-        Circle area = new Circle(point,radius);
-        Query query = new Query();
-        query.addCriteria(Criteria.where("location").withinSphere(area));
-        return mongoOperations.find(query, GasStation.class);
     }
     
     @Override
