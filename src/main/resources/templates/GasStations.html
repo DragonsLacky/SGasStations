@@ -2,13 +2,14 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
     <script th:src="@{/js/location.js}"></script>
     <script th:src="@{/js/bootstrap.min.js}"></script>
-    <title>Title</title>
+    <title>GasStations</title>
 </head>
 <body>
 <div class="container">
@@ -24,7 +25,7 @@
                     <input class="location" type="hidden" name="location">
                     <input placeholder="search" th:value="${searchTerm}?${searchTerm}:''" class="form-control rounded-left" type="text" name="search">
                     <label class="input-group-append">
-                        <input class="btn btn-primary rounded-right" type="submit" value="search">
+                        <input class="btn btn-primary rounded-right" id="normal-search" type="submit" value="search">
                     </label>
                 </label>
             </form>
@@ -91,7 +92,7 @@
                         <div class="col-md-8 align-items-center text-center">
                             <div class="row">
                                 <div class="col-md-4 offset-md-4">
-                                    <input type="submit" class="btn btn-primary w-100" value="Advanced search">
+                                    <input id="advanced-search" type="submit" class="btn btn-primary w-100" value="Advanced search">
                                 </div>
                             </div>
                         </div>
@@ -175,37 +176,44 @@
     <input class="location" type="hidden" name="location">
 </form>
 <script>
-    function setElementValue(){
-        for (let i = 0; i < elems.length; i++) {
-            elems[i].setAttribute('value', this.position.coords.longitude+","+this.position.coords.latitude)
-        }
-    }
-    getLocation()
-    let elems = document.getElementsByClassName('location');
 
-    if (!window.location.href.toString().includes("show")){
-        setElementValue();
-        console.log()
-        document.getElementById('getloc').submit();
-    }
-    getLocation();
-    while (true) {
-        let i = 0;
-        for (i = 0; i < elems.length; i++) {
-            if (elems[i].getAttribute('value') === null || elems[i].getAttribute('value') === ""){
-                setElementValue();
-                break;
-            }
-        }
-        if ( i === elems.length){
-            break;
+    let locationFields = document.getElementsByClassName('location');
+
+    function setElementValue(locationElements){
+        for (let i = 0; i < locationElements.length; i++) {
+            locationElements[i].setAttribute('value', this.position.coords.longitude+","+this.position.coords.latitude)
         }
     }
+
+     function getAndSetLocation(){
+        getLocation()
+        setElementValue(locationFields)
+    }
+
+    function getSetAndSubmitLocation(){
+        getAndSetLocation()
+        if (!window.location.href.toString().includes("show")){
+            document.getElementById('getloc').submit();
+        }
+    }
+
+
+    getLocation()
+
+    document.body.onmousemove = getSetAndSubmitLocation;
+
+    document.body.onmouseover = getSetAndSubmitLocation;
+
+    document.getElementById("normal-search").onclick = getAndSetLocation;
+
+    document.getElementById("advanced-search").onclick = getAndSetLocation;
+
     window.onbeforeunload = function (e){
         if(e.state){
             window.location.href = window.location.href.toString().slice(0,window.location.href.lastIndexOf("/"))
         }
     }
+
     window.onpopstate = function(e){
         if(e.state){
             window.location.href = window.location.href.toString().slice(0,window.location.href.lastIndexOf("/"))
